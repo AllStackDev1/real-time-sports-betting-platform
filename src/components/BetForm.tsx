@@ -1,15 +1,17 @@
-import React, { useState } from 'react';
-import { Game } from '../types';
+import React, { useState } from "react";
+import { BetSelection, Game } from "../types";
+import Input from "./Input";
+import Button from "./Button";
 
 interface BetFormProps {
   game: Game;
-  onSubmit: (amount: number, selection: 'home' | 'away' | 'draw') => void;
+  onSubmit: (amount: number, selection: BetSelection) => void;
   onClose: () => void;
 }
 
 export function BetForm({ game, onSubmit, onClose }: BetFormProps) {
-  const [amount, setAmount] = useState<string>('');
-  const [selection, setSelection] = useState<'home' | 'away' | 'draw'>('home');
+  const [amount, setAmount] = useState<string>("");
+  const [selection, setSelection] = useState<BetSelection>(BetSelection.HOME);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -28,47 +30,45 @@ export function BetForm({ game, onSubmit, onClose }: BetFormProps) {
             {game.homeTeam} vs {game.awayTeam}
           </p>
         </div>
-        
+
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Select Team</label>
+          <div className="relative">
             <select
               value={selection}
-              onChange={(e) => setSelection(e.target.value as 'home' | 'away' | 'draw')}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+              onChange={(e) => setSelection(e.target.value as BetSelection)}
+              className="absolute inset-0 opacity-0 cursor-pointer"
             >
-              <option value="home">{game.homeTeam} ({game.odds.home.toFixed(2)})</option>
-              <option value="away">{game.awayTeam} ({game.odds.away.toFixed(2)})</option>
+              <option value="home">
+                {game.homeTeam} ({game.odds.home.toFixed(2)})
+              </option>
+              <option value="away">
+                {game.awayTeam} ({game.odds.away.toFixed(2)})
+              </option>
               <option value="draw">Draw ({game.odds.draw.toFixed(2)})</option>
             </select>
+            <div className="mt-1 w-full h-14 px-4 rounded-md border-2 border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 flex items-center justify-between">
+              <span>{selection}</span>
+              <span className="ml-auto">▼</span>
+            </div>
           </div>
-          
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Bet Amount ($)</label>
-            <input
-              type="number"
-              value={amount}
-              onChange={(e) => setAmount(e.target.value)}
-              min="1"
-              step="1"
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-            />
-          </div>
-          
+
+          <Input
+            type="number"
+            value={amount}
+            label="Bet Amount ($)"
+            onChange={(e) => setAmount(e.target.value)}
+            min="1"
+            step="1"
+          />
+
           <div className="flex space-x-4">
-            <button
-              type="submit"
-              className="flex-1 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors"
-            >
-              Place Bet
-            </button>
-            <button
+            <Button title="Place Bet" />
+            <Button
               type="button"
+              variant="secondary"
+              title="Cancel"
               onClick={onClose}
-              className="flex-1 bg-gray-200 text-gray-800 px-4 py-2 rounded hover:bg-gray-300 transition-colors"
-            >
-              Cancel
-            </button>
+            />
           </div>
         </form>
       </div>

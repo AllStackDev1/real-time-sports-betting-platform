@@ -1,4 +1,3 @@
-import React from 'react';
 import { Bet, Game } from '../types';
 import { Clock, CheckCircle, XCircle } from 'lucide-react';
 
@@ -50,7 +49,7 @@ export function BettingHistory({ bets, games }: BettingHistoryProps) {
                   ${bet.amount.toLocaleString()}
                 </p>
                 <p className="text-sm text-gray-500">
-                  {new Date(bet.timestamp).toLocaleDateString()}
+                  {new Date(bet.createdAt!).toLocaleDateString()}
                 </p>
               </div>
             </div>

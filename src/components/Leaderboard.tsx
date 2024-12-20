@@ -1,4 +1,3 @@
-import React from 'react';
 import { LeaderboardEntry } from '../types';
 import { Medal, Trophy, Award } from 'lucide-react';
 
@@ -7,13 +6,13 @@ interface LeaderboardProps {
 }
 
 export function Leaderboard({ entries }: LeaderboardProps) {
-  const getRankIcon = (rank: number) => {
+  const getRankIcon = (rank: string) => {
     switch (rank) {
-      case 1:
+      case "1":
         return <Trophy className="w-6 h-6 text-yellow-500" />;
-      case 2:
+      case "2":
         return <Medal className="w-6 h-6 text-gray-400" />;
-      case 3:
+      case "3":
         return <Award className="w-6 h-6 text-amber-700" />;
       default:
         return null;
@@ -35,7 +34,7 @@ export function Leaderboard({ entries }: LeaderboardProps) {
               </span>
               <div>
                 <p className="font-semibold">{entry.username}</p>
-                <p className="text-sm text-gray-500">Win Rate: {(entry.winRate * 100).toFixed(1)}%</p>
+                <p className="text-sm text-gray-500">Win Rate: {entry.winRate.toFixed(1)}%</p>
               </div>
             </div>
             <div className="text-right">
