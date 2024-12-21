@@ -6,14 +6,22 @@ import { GameCard } from "../components/GameCard";
 import { Leaderboard } from "../components/Leaderboard";
 import { BetForm } from "../components/BetForm";
 import { BettingHistory } from "../components/BettingHistory";
-import { Bet, BetSelection, BetStatus, Game, LeaderboardEntry } from "../types";
+import {
+  Bet,
+  BetSelection,
+  BetStatus,
+  Game,
+  LeaderboardEntry,
+  User,
+} from "../types";
 import { useBetStore, useAuthStore, useGameStore } from "../stores";
 import { useSocketIO } from "../hooks";
 
 export const Dashboard = () => {
   const { games, loadGames } = useGameStore();
   const { user, accessToken } = useAuthStore();
-  const { bets, createBet, loadBets, leaderboard, loadLeaderboard } = useBetStore();
+  const { bets, createBet, loadBets, leaderboard, loadLeaderboard } =
+    useBetStore();
   const [selectedGame, setSelectedGame] = useState<string | null>(null);
   const socket = useSocketIO(accessToken!);
 
@@ -56,8 +64,7 @@ export const Dashboard = () => {
     loadBets();
     // load leaderboard
     loadLeaderboard();
-  }, [loadBets, loadGames, loadLeaderboard])
-
+  }, [loadBets, loadGames, loadLeaderboard]);
 
   const updateGame = (payload: Game) => {
     const _games = useGameStore.getState().games as Game[];
@@ -71,23 +78,35 @@ export const Dashboard = () => {
     useGameStore.setState({ games: newGames });
   };
 
-  const updateBetHistory = (payload: Bet[]) => {
-    useBetStore.setState({ bets: payload });
+  const updateBetHistory = (payload: Bet) => {
+    const _bets = useBetStore.getState().bets as Bet[];
+    // filter and replace the bet with id bet.id
+    const newBets = _bets.map((bet) => {
+      if (bet.id === payload.id) {
+        return payload;
+      }
+      return bet;
+    });
+    useBetStore.setState({ bets: newBets });
   };
 
   const updateLeaderboard = (payload: LeaderboardEntry[]) => {
     useBetStore.setState({ leaderboard: payload });
   };
 
+  const updateUserBalance = (payload: number) => {
+    useAuthStore.setState({ user: { ...useAuthStore.getState().user, balance: payload } as User });
+  };
+
   useEffect(() => {
     if (socket) {
       socket.on("gameData", updateGame);
       socket.on(`${user?.id}-betHistoryUpdate`, updateBetHistory);
+      socket.on(`${user?.id}-balance`, updateUserBalance);
       socket.on("leaderboardUpdate", updateLeaderboard);
     }
     return () => disconnectSocket();
   }, [user, socket, disconnectSocket]);
-  
 
   return (
     <div className="min-h-screen bg-gray-100">
@@ -97,23 +116,23 @@ export const Dashboard = () => {
             <div className="flex items-center space-x-2">
               <Activity className="w-8 h-8 text-blue-500" />
               <h1 className="text-2xl font-bold text-gray-900">
-                Sports Betting
+                Yabaleli Betting
               </h1>
             </div>
             {user && (
               <div className="flex">
                 <div className="text-right">
-                <p className="text-sm text-gray-600">Balance</p>
-                <p className="text-xl font-bold">
-                  ${user.balance.toLocaleString()}
-                </p>
-              </div>
-              <div className="flex items-center ml-4">
-                <div className="text-right">
-                  <p className="text-sm text-gray-600">User</p>
-                  <p className="text-xl font-bold">{user.username}</p>
+                  <p className="text-sm text-gray-600">Balance</p>
+                  <p className="text-xl font-bold">
+                    ${user.balance.toLocaleString()}
+                  </p>
                 </div>
-              </div>
+                <div className="flex items-center ml-4">
+                  <div className="text-right">
+                    <p className="text-sm text-gray-600">User</p>
+                    <p className="text-xl font-bold">{user.username}</p>
+                  </div>
+                </div>
               </div>
             )}
           </div>
@@ -132,7 +151,7 @@ export const Dashboard = () => {
                 />
               ))}
             </div>
-            <BettingHistory bets={bets} games={games} />
+            <BettingHistory bets={bets} />
           </div>
           <div className="space-y-6">
             <Leaderboard entries={leaderboard} />

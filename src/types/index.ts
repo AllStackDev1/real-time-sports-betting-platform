@@ -53,6 +53,8 @@ export interface Bet extends IDocument {
   selectedTeam: BetSelection;
   odds: number;
   status: BetStatus;
+  game: Game;
+  user?: User;
 }
 
 export interface LeaderboardEntry {

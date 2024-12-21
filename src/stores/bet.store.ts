@@ -98,7 +98,7 @@ export const useBetStore = create(
       clearFormState: () => set({ status: false, message: null, errors: null }),
     }),
     {
-      name: "Bet-store",
+      name: "bet-store",
       storage: createJSONStorage(() => sessionStorage),
     }
   )

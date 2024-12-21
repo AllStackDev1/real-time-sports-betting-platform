@@ -1,19 +1,16 @@
-import { Bet, Game } from '../types';
-import { Clock, CheckCircle, XCircle } from 'lucide-react';
+import { Bet } from "../types";
+import { Clock, CheckCircle, XCircle } from "lucide-react";
 
 interface BettingHistoryProps {
   bets: Bet[];
-  games: Game[];
 }
 
-export function BettingHistory({ bets, games }: BettingHistoryProps) {
-  const getGameById = (gameId: string) => games.find((game) => game.id === gameId);
-
+export function BettingHistory({ bets }: BettingHistoryProps) {
   const getStatusIcon = (status: string) => {
     switch (status) {
-      case 'won':
+      case "won":
         return <CheckCircle className="w-5 h-5 text-green-500" />;
-      case 'lost':
+      case "lost":
         return <XCircle className="w-5 h-5 text-red-500" />;
       default:
         return <Clock className="w-5 h-5 text-yellow-500" />;
@@ -25,9 +22,6 @@ export function BettingHistory({ bets, games }: BettingHistoryProps) {
       <h2 className="text-2xl font-bold mb-6">Betting History</h2>
       <div className="space-y-4">
         {bets.map((bet) => {
-          const game = getGameById(bet.gameId);
-          if (!game) return null;
-
           return (
             <div
               key={bet.id}
@@ -37,7 +31,7 @@ export function BettingHistory({ bets, games }: BettingHistoryProps) {
                 {getStatusIcon(bet.status)}
                 <div>
                   <p className="font-semibold">
-                    {game.homeTeam} vs {game.awayTeam}
+                    {bet.game.homeTeam} vs {bet.game.awayTeam}
                   </p>
                   <p className="text-sm text-gray-500">
                     Bet on: {bet.selectedTeam} @ {bet.odds}
@@ -45,11 +39,17 @@ export function BettingHistory({ bets, games }: BettingHistoryProps) {
                 </div>
               </div>
               <div className="text-right">
-                <p className="font-bold">
-                  ${bet.amount.toLocaleString()}
-                </p>
+                <p className="font-bold">${bet.amount.toLocaleString()}</p>
                 <p className="text-sm text-gray-500">
                   {new Date(bet.createdAt!).toLocaleDateString()}
+                </p>
+                <p className="text-sm text-gray-500">
+                  {bet.status === "won"
+                    ? "Won"
+                    : bet.status === "lost"
+                    ? "Lost"
+                    : "Potential winning"}
+                  : ${(bet.amount * bet.odds).toLocaleString()}
                 </p>
               </div>
             </div>
