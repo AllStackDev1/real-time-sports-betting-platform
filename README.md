@@ -2,7 +2,7 @@
 
 A modern, real-time sports betting platform built with React, TypeScript, and Tailwind CSS. This application provides live game updates, real-time odds adjustments, and an interactive betting experience.
 
-![Sports Betting Platform](https://images.unsplash.com/photo-1518133910546-b6c2fb7d79e3?auto=format&fit=crop&q=80&w=2000)
+![Sports Betting Platform](https://github.com/user-attachments/assets/aeb0ce27-8c4a-4d06-a901-12f941207b17)
 
 ## Features
 
