@@ -9,7 +9,7 @@ export default mergeConfig(
     test: {
       globals: true,
       environment: 'jsdom',
-      setupFiles: ['./setup-vitest.ts'],
+      setupFiles: ['./src/setupTests.ts'],
       // you might want to disable CSS modules
       css: false,
     },

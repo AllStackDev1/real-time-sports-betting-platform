@@ -38,7 +38,7 @@ const asyncFetch = async (
       response = await fetch(url, options);
     } catch (error) {
       console.error("Token refresh failed:", error);
-      throw error; // Re-throw if refresh fails
+      window.location.href = "/login";
     }
   }
   return await response.json();

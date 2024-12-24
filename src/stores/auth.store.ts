@@ -9,6 +9,7 @@ export type IAuthStore = {
   status: boolean;
   logout: () => void;
   user: User | null;
+  error: string | null;
   message: string | null;
   isSubmitting: boolean;
   login: (payload: AuthPayload) => Promise<void>;
@@ -19,6 +20,7 @@ export type IAuthStore = {
 
 const INIT_VALUES = {
   user: null,
+  error: null,
   errors: null,
   status: false,
   message: null,
@@ -31,7 +33,7 @@ export const useAuthStore = create(
     (set) => ({
       ...INIT_VALUES,
       login: async (payload) => {
-        set({ isSubmitting: true });
+        set({ isSubmitting: true, error: null });
         try {
           const response = await login(payload);
           if (response.accessToken) {
@@ -48,7 +50,7 @@ export const useAuthStore = create(
         }
       },
       signup: async (payload) => {
-        set({ isSubmitting: true });
+        set({ isSubmitting: true, error: null });
         try {
           const response = await register(payload);
           if (response.user) {

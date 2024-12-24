@@ -1,14 +1,17 @@
 import { describe, it, expect } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { Leaderboard } from "../Leaderboard";
+import { LeaderboardEntry } from "../../types";
 
 describe("Leaderboard", () => {
-  const mockEntries = [
+  const mockEntries: LeaderboardEntry[] = [
     {
       userId: "user1",
       username: "JohnDoe",
       user: {
+        id: "1",
         username: "JohnDoe",
+        balance: 5000,
       },
       totalWinnings: 5000,
       rank: "1",
@@ -20,6 +23,8 @@ describe("Leaderboard", () => {
       totalWinnings: 3000,
       rank: "2",
       user: {
+        id: "1",
+        balance: 5000,
         username: "JaneSmith",
       },
       winRate: 65,

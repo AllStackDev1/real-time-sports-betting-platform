@@ -15,38 +15,52 @@ import {
   User,
 } from "../types";
 import { useBetStore, useAuthStore, useGameStore } from "../stores";
-import { useSocketIO } from "../hooks";
+import { useAlert, useSocketIO } from "../hooks";
+import { betValidate } from "../validators";
 
 export const Dashboard = () => {
   const { games, loadGames } = useGameStore();
   const { user, accessToken } = useAuthStore();
   const { bets, createBet, loadBets, leaderboard, loadLeaderboard } =
     useBetStore();
-  const [selectedGame, setSelectedGame] = useState<string | null>(null);
+  const [betOption, setBetOption] = useState<{
+    gameId: string;
+    selection: BetSelection;
+  } | null>(null);
+  
   const socket = useSocketIO(accessToken!);
 
-  const handlePlaceBet = (gameId: string) => {
-    setSelectedGame(gameId);
+  // notification hook
+  useAlert("auth");
+
+  const handlePlaceBet = (gameId: string, selection: BetSelection) => {
+    setBetOption({gameId, selection});
   };
 
   const handleBetSubmit = (amount: number, selection: BetSelection) => {
-    if (user && selectedGame) {
-      const game = games.find((g) => g.id === selectedGame);
+    if (user && betOption) {
+      const game = games.find((g) => g.id === betOption.gameId);
       if (game) {
         const newBet = {
-          gameId: selectedGame,
-          userId: user?.id,
           amount,
+          gameId: game.id,
+          userId: user?.id,
           selectedTeam: selection,
           odds: game.odds[selection],
           status: BetStatus.PENDING,
         };
 
+        const parsed = betValidate(newBet);
+        if (!parsed.success) {
+          useAuthStore.setState({ message: "Invalid credentials", status: false });
+          return;
+        }
+
         // Add new bet
-        createBet(newBet);
+        createBet(parsed.data);
       }
     }
-    setSelectedGame(null);
+    setBetOption(null);
   };
 
   const disconnectSocket = useCallback(() => {
@@ -95,7 +109,9 @@ export const Dashboard = () => {
   };
 
   const updateUserBalance = (payload: number) => {
-    useAuthStore.setState({ user: { ...useAuthStore.getState().user, balance: payload } as User });
+    useAuthStore.setState({
+      user: { ...useAuthStore.getState().user, balance: payload } as User,
+    });
   };
 
   useEffect(() => {
@@ -159,11 +175,12 @@ export const Dashboard = () => {
         </div>
       </main>
 
-      {selectedGame && (
+      {betOption && (
         <BetForm
-          game={games.find((g) => g.id === selectedGame)!}
-          onSubmit={handleBetSubmit}
-          onClose={() => setSelectedGame(null)}
+        onSubmit={handleBetSubmit}
+        selection={betOption.selection}
+        onClose={() => setBetOption(null)}
+        game={games.find((g) => g.id === betOption.gameId)!}
         />
       )}
     </div>

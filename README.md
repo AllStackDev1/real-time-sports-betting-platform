@@ -22,7 +22,7 @@ A modern, real-time sports betting platform built with React, TypeScript, and Ta
 - Real-time rankings
 - Win rate tracking
 - Total winnings display
-- Dynamic position updates
+- Dynamic position updates based on win rate and amount won using weights
 
 ### 👤 User Features
 - Personal balance tracking
@@ -39,15 +39,26 @@ src/
 │   ├── BettingHistory.tsx # History display
 │   ├── GameCard.tsx     # Game display card
 │   └── Leaderboard.tsx  # Leaderboard component
-├── context/
-│   └── BettingContext.tsx # Global state management
-├── mocks/
-│   └── mockData.ts      # Simulation data
-├── services/
-│   └── simulationService.ts # Real-time update simulation
+│   └── Button.tsx  # Button component
+│   └── Input.tsx  # Input component
+├── hooks/
+│   └── useAlert.ts      # hooks to trigger notification popup
+├── pages/           # React components
+│   └── dashboard.tsx      # Dashboard page component
+│   └── login.tsx      # Login page component
+│   └── signup.tsx      # Signup page component
+├── stores/
+│   └── auth.store.ts # auth state management
+│   └── bet.store.ts # bet state management
+│   └── game.store.ts # game state management
+├── utils/
+│   └── constant.ts # Where we define constant with use throughout the app
+│   └── helper.ts  # Where we write some helper functions that we can reuse
+│   └── http.ts  # window fetch config file, which expose http methods
+│   └── services.ts  # File that exposes all api services we need
 ├── types/
 │   └── index.ts         # TypeScript definitions
-└── App.tsx              # Main application component
+└── App.tsx              # Main application component that export the Router configurations
 ```
 
 ## Technology Stack
@@ -62,7 +73,7 @@ src/
 
 1. Clone the repository:
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/AllStackDev1/real-time-sports-betting-platform/tree/main
    ```
 
 2. Install dependencies:
@@ -90,11 +101,12 @@ The application uses React Context for state management, with the following key 
 - **Leaderboard**: Displays real-time rankings
 
 ### Real-time Updates
-The simulation service provides:
-- Score updates every 3 seconds
+The app gets simulated data from the server which provides:
+- Score updates every 30 seconds
 - Odds adjustments based on score changes
 - Leaderboard updates every 5 seconds
 - Game time progression
+- Balance update when bet is placed or won
 
 ## Best Practices
 
@@ -105,7 +117,7 @@ The simulation service provides:
 - Modular service architecture
 
 ### State Management
-- Centralized state
+- Zustand state management with different individual store for conciseness.
 - Immutable state updates
 - Type-safe actions
 - Clear update patterns
@@ -113,16 +125,7 @@ The simulation service provides:
 ### Performance
 - Optimized re-renders
 - Efficient state updates
-- Controlled simulation intervals
 - Clean-up on unmount
-
-## Contributing
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
 
 ## License
 

@@ -27,8 +27,6 @@ export interface User {
   id: string;
   username: string;
   balance: number;
-  rank: number;
-  totalWinnings: number;
 }
 
 export interface Odds extends Partial<IDocument> {

@@ -1,46 +1,29 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { LogIn } from "lucide-react";
 import { useAuthStore } from "../stores/auth.store";
-import { z } from "zod";
 import { useAlert } from "../hooks";
 import Input from "../components/Input";
 import Button from "../components/Button";
+import { authValidate } from "../validators";
 
 export function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const { login, isSubmitting } = useAuthStore((state) => state);
+  const { login, error, isSubmitting } = useAuthStore((state) => state);
+
+  // notification hook
   useAlert("auth");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const LoginSchema = z.object({
-      username: z.string().min(1),
-      password: z
-        .string()
-        .min(6)
-        .regex(
-          new RegExp(
-            "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$"
-          )
-        ),
-    });
-    const parsed = LoginSchema.safeParse({ username, password });
+    const parsed = authValidate({ username, password });
     if (!parsed.success) {
-      setError("Invalid credentials");
+      useAuthStore.setState({ message: "Invalid credentials", status: false });
       return;
     }
-    setError("");
-    try {
-      await login(parsed.data);
-      // navigate("/");
-    } catch (err) {
-      setError("Invalid credentials");
-    }
+    await login(parsed.data);
   };
 
   return (

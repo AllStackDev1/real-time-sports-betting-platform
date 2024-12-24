@@ -8,7 +8,7 @@ export const useSocketIO = (authorization: string) => {
   useEffect(() => {
     if (!socketRef.current) {
       socketRef.current = io(API_BASE_URL, {
-        query: { authorization },
+        auth: { token: authorization },
       });
 
       socketRef.current.on("connect", () => {
@@ -25,5 +25,5 @@ export const useSocketIO = (authorization: string) => {
     };
   }, [authorization]);
 
-  return socketRef.current
-}
+  return socketRef.current;
+};

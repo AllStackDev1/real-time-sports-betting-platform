@@ -43,7 +43,7 @@ export const useBetStore = create(
                 balance: (user?.balance ?? 0) - response.data.amount,
               } as User,
             });
-            set({ bets: [...get().bets, response.data] });
+            set({ bets: [response.data, ...get().bets] });
           } else {
             set({ status: false, message: response.message });
           }
