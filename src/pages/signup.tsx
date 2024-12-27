@@ -41,12 +41,19 @@ export function Signup() {
             onChange={(e) => setUsername(e.target.value)}
           />
 
-          <Input
-            label="Password"
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
+          <div className="space-y-2">
+            <Input
+              label="Password"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+            <p className="text-sm text-gray-500">
+              Password must be at least 8 characters long, include at least one
+              uppercase letter, one lowercase letter, one number, and one
+              special character.
+            </p>
+          </div>
 
           {error && <p className="text-red-500 text-sm">{error}</p>}
 
